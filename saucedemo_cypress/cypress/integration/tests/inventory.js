@@ -4,18 +4,17 @@ import InventoryPage from "../pageObjects/inventory_page"
 
 describe('Product page Test Suite', () => {
 
-    // before('Launch Saucedemo E-Commerce Homepage', () => {
-    //     // cy.window().then((window) => {
-    //     //     window.sessionStorage.setItem('cart-contents', '[]')
-    //     //   })
-    //     LoginPage.loadHomePage()
+         before(function() {
+            cy.visit(Cypress.env('url'))
+            LoginPage.login('performance_glitch_user', 'secret_sauce')
+        });
 
-    // })
-
-    before(() => {
-        cy.visit(Cypress.env('url'))
-        LoginPage.login('performance_glitch_user', 'secret_sauce')
-    });
+        beforeEach(function() {
+            cy.fixture('products').then(function (data) {
+            this.data = data
+            })
+        });
+        
 
     it('should assert Page title and Product title after successful login', () => {
        cy.title().should('eq', 'Swag Labs') 
@@ -26,44 +25,49 @@ describe('Product page Test Suite', () => {
         InventoryPage.inventoryItems.its('length').should('be.gt', 0)
     })
 
-    it('should sort product by price: low to high', () => {
+    it('should sort product by price: low to high', function() {
         InventoryPage.sortByName.select('Price (low to high)')
         InventoryPage.sortByName.should('have.value', 'lohi')
     })
 
-    it('should assert a product name and price in the page', () => {
-        InventoryPage.inventoryItems.each(($item, index, $list) => {
-        const product_name = $item.find('.inventory_item_name').text()
-        const product_price = $item.find('.inventory_item_price').text()
-        if(product_name === 'Sauce Labs Onesie')
-        {
-            cy.wrap($item).find('.inventory_item_price').should('have.text', product_price)
-            cy.wrap($item).find('.inventory_item_name').should('have.text', product_name)
-        }
-        })
+    it('should assert product name and its price in the inventory page', function() {
+        cy.verifyProductPrice('Sauce Labs Bolt T-Shirt')
     })
 
-    it('should add 2 products to cart', () => {
-        let cartCount = 0;
-        InventoryPage.inventoryItems.each(($item, index, $list) => {
-            const productName = $item.find('.inventory_item_name').text()
-            if (productName === 'Sauce Labs Backpack' || productName.includes('Light'))
-            {
-                cy.wrap($item).find('button').click()
-                //cy.wrap($item).find('.btn_primary').click()
-                cartCount++
-            }      
-        })
-        .then(() => {
-            cy.log(cartCount)
-            InventoryPage.addToCartCount.should('have.text', cartCount)
-        })
-        
+    it('should a single product to cart', function() {
+        cy.addProductToCart('Sauce Labs Bolt T-Shirt')
+        InventoryPage.addToCartCount.should('have.text', 1)
     });
 
-    // it('should select a product ', () => {
-    //     //LoginPage.login('performance_glitch_user', 'secret_sauce');
-    //     cy.contains('Bolt').click()
+    it('should add multiple products to cart', function() {
+        let count = 0
+        this.data.addToCart.forEach(function (element){
+            cy.addProductToCart(element)
+            count++
+            InventoryPage.addToCartCount.should('have.text', count)
+        })
+    });
+
+    it('remove product from cart', function() {
+        //first check if button state is 'add to cart', if yes change to button state to 'Remove'
+        InventoryPage.btnAddRemoveFleece.each(($item, index, $list) => {
+            const buttonState = $item.text()
+            if (buttonState != 'Remove')
+            {
+                cy.wrap($item).click()     
+            }      
+        })
+        InventoryPage.btnAddRemoveFleece.click()
+        InventoryPage.btnAddRemoveFleece.should('have.text', 'Add to cart')   
+    });
+
+    // it('should assert "back to products" button', () => {
+    //     //cy.visit(Cypress.env('url'))
+    //     //LoginPage.login('performance_glitch_user', 'secret_sauce')
+    //     cy.contains("Fleece Jacket").click()
+    //     cy.url().should('include', 'id=')
+    //     InventoryPage.btnBackToProducts.click()
+    //     cy.location('pathname').should('eq','/inventory.html')
+        
     // });
-    
 });
