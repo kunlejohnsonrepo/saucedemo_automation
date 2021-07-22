@@ -4,11 +4,17 @@
   "description": "Saucedemo E-commerce Cypress test automation",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx cypress run"
+    #"test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cypress": "^7.7.0"
+  },
+  "devDependencies": {
+    "cypress-mochawesome-reporter": "^2.2.0",
+    "mochawesome": "^6.2.2",
+    "mochawesome-merge": "^4.2.0"
   }
 }

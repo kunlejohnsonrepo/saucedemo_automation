@@ -4,6 +4,18 @@
     "env":
     {
         "url": "https://saucedemo.com/"
-    }
+    },
+
+    "reporter": "mochawesome",
+    "reporterOptions": {
+        "reportDir": "cypress/report",
+        "reportFilename": "mochawesome",
+        "overwrite": true,
+        "html": true,
+        "json": false,
+        "chart": true,
+        "timestamp": "mmddyyyy_HHMMss"
+        },
+        "video": false
   
 }
