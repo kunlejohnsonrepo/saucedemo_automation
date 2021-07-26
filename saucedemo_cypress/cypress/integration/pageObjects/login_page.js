@@ -19,13 +19,16 @@ class LoginPage {
         return cy.get('#react-burger-menu-btn')
     }
 
+    get msgError(){
+        return cy.get('[data-test="error"]')
+    }
+
     login(username, password) {
         this.inputUsername.type(username)
         this.inputUsername.should('have.value', username)
         this.inputPassword.type(password)
         this.inputPassword.should('have.value', password)
         this.loginBtn.click()
-        this.hamburgerMenu.should('exist')
     }
 
     loadHomePage(){
