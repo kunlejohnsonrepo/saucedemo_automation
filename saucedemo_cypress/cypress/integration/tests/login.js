@@ -1,21 +1,23 @@
 /// <reference types="Cypress" />
+
 import LoginPage from "../pageObjects/login_page"
+const user = require('../../fixtures/users.json')
 
-describe('User Login TestSuite', () => {
+describe('Login Testsuite', () => {
 
-    before('Launch Saucedemo E-Commerce Homepage', () => {
+    beforeEach(function() {
+        cy.visit(Cypress.env('url'))
 
-        LoginPage.loadHomePage()
-    })
+    });
 
-    it('should login successfully', () => {
-        LoginPage.inputUsername.type('performance_glitch_user')
-        LoginPage.inputUsername.should('have.value', 'performance_glitch_user')
-        LoginPage.inputPassword.type('secret_sauce')
-        LoginPage.inputPassword.should('have.value', 'secret_sauce')
-        LoginPage.loginBtn.click();
-        LoginPage.hamburgerMenu.should('exist')
-
+    user.forEach((data) => {
+    it(`Login with ${data.credential}: ${data.username}`, function() {
+        LoginPage.login(data.username, data.password)
+        cy.url().should('include', data.url)
+        if (data.hasError){
+        LoginPage.msgError.should('be.visible')
+            }
+        })
     })
     
 });
