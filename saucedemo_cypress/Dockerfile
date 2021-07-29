@@ -13,7 +13,5 @@ COPY cypress.json /usr/src/app/
 
 RUN ./node_modules/.bin/cypress verify
 
-
 # CMD ["./node_modules/.bin/cypress", "run", "--spec", "./cypress/integration/tests/*.js"]
-# CMD ["./node_modules/.bin/cypress", "run"]
 CMD ["npx", "cypress", "run"]
