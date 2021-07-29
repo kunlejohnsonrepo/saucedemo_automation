@@ -4,7 +4,10 @@
   "description": "Saucedemo E-commerce Cypress test automation",
   "main": "index.js",
   "scripts": {
-    "test": "npx cypress run"
+    "test": "./node_modules/.bin/cypress run --spec 'cypress/integration/tests/*.js'",
+    "head_test": "npm run test -- --headed",
+    "chrome_test": "npm run test -- --headed --browser chrome",
+    "parallel_test": "npm run test -- --headed --browser chrome --parallel"
   },
   "author": "",
   "license": "ISC",
